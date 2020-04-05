@@ -19,6 +19,11 @@ module Nullable =
         | Null -> Nullable<'b>()
         | Exists(value:'a) -> binder value
 
+    let contains (value:'a) (nullable:Nullable<'a>):bool =
+        match nullable with
+        | Null -> false
+        | Exists(out:'a) -> value = out
+
     let count (nullable:Nullable<'a>):int =
         match nullable with
         | Null -> 0
@@ -28,6 +33,14 @@ module Nullable =
         match nullable with
         | Null -> false
         | _ -> predicate nullable
+
+    let filter (predicate:'a -> bool) (nullable:Nullable<'a>):Nullable<'a> =
+        match nullable with
+        | Null -> Nullable<'a>()
+        | Exists(value:'a) ->
+            match predicate value with
+            | true -> nullable
+            | false -> Nullable<'a>()
 
     let forAll (predicate:Nullable<'a> -> bool) (nullable:Nullable<'a>):bool =
         match nullable with
@@ -63,6 +76,16 @@ module Nullable =
         match nullable with
         | Null -> Nullable<'b>()
         | Exists(value:'a) -> Nullable<'b>(mapper value)
+
+    let map2 (mapper:'a -> 'b -> 'c) (nullable:Nullable<'a>) (nullable2:Nullable<'b>):Nullable<'c> =
+        match nullable, nullable2 with
+        | Exists(value:'a), Exists(value2:'b) -> Nullable<'c>(mapper value value2)
+        | _ -> Nullable<'c>()
+
+    let map3 (mapper:'a -> 'b -> 'c -> 'd) (nullable:Nullable<'a>) (nullable2:Nullable<'b>) (nullable3:Nullable<'c>):Nullable<'d> =
+        match nullable, nullable2, nullable3 with
+        | Exists(value:'a), Exists(value2:'b), Exists(value3:'c) -> Nullable<'d>(mapper value value2 value3)
+        | _ -> Nullable<'d>()
 
     let toArray (nullable:Nullable<'a>):'a array =
         match nullable with

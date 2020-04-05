@@ -76,6 +76,13 @@ module Comparison =
         |> SignInt32
         |> SignToOrdering
 
+    let (|Between|_|) (a:'a when 'a:comparison) (b:'a when 'a:comparison) (c:'a when 'a:comparison) =
+        match a < c && c < b with
+        | true ->
+            ()
+            |> Some
+        | false -> None
+
     let (|LessThan|_|) (a:'a when 'a:comparison) (b:'a when 'a:comparison) =
         match b < a with
         | true ->
