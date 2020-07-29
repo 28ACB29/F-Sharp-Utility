@@ -22,16 +22,20 @@ module Deque =
 
     let PeekBack (deque:'a ListDeque):'a option =
         match deque with
-        | Stacks(_, (head:'a)::(tail:'a list)) -> Some(head)
-        | _ -> None
-
-    let PeekFront (deque:'a ListDeque):'a option =
-        match deque with
-        | Stacks((head:'a)::(tail:'a list), _) -> Some(head)
+        | Stacks(_, (head:'a)::_) -> Some(head)
         | _ ->
             let rebalanced:'a ListDeque = rebalance deque
             match rebalanced with
-            | Stacks((head:'a)::(tail:'a list), _) -> Some(head)
+            | Stacks(_, (head:'a)::_) -> Some(head)
+            | _ -> None
+
+    let PeekFront (deque:'a ListDeque):'a option =
+        match deque with
+        | Stacks((head:'a)::_, _) -> Some(head)
+        | _ ->
+            let rebalanced:'a ListDeque = rebalance deque
+            match rebalanced with
+            | Stacks((head:'a)::_, _) -> Some(head)
             | _ -> None
 
     let PopBack (deque:'a ListDeque):('a option * 'a ListDeque) =
@@ -46,12 +50,12 @@ module Deque =
     let PopFront (deque:'a ListDeque):('a option * 'a ListDeque) =
         match deque with
         | Stacks((head:'a)::(tail:'a list), (back:'a list)) -> (Some(head), Stacks(tail, back))
-        | _ -> (None, deque)
+        | _ ->
+            let rebalanced:'a ListDeque = rebalance deque
+            match rebalanced with
+            | Stacks((head:'a)::(tail:'a list), (back:'a list)) -> (Some(head), Stacks(tail, back))
+            | _ -> (None, deque)
 
-    let PushBack (value:'a) (deque:'a ListDeque):('a ListDeque) =
-        match deque with
-        | Stacks((front:'a list), (back:'a list)) -> Stacks(front, value::back)
+    let PushBack (value:'a) (Stacks((front:'a list), (back:'a list)):'a ListDeque):('a ListDeque) = Stacks(front, value::back)
 
-    let PushFront (value:'a) (deque:'a ListDeque):('a ListDeque) =
-        match deque with
-        | Stacks((front:'a list), (back:'a list)) -> Stacks(value::front, back)
+    let PushFront (value:'a) (Stacks((front:'a list), (back:'a list)):'a ListDeque):('a ListDeque) = Stacks(value::front, back)
