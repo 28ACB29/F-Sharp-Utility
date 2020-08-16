@@ -4,304 +4,116 @@ open System
 
 module CollectionActivePatterns =
 
-    let private BoolToOption (result:bool) =
+    let private boolToOption (result:bool) =
         match result with
         | true -> Some()
         | false -> None
 
-    let (|ArrayContains|_|) (value:'a) (source:'a array) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Array.contains value
-            |> BoolToOption
-
-    let (|ArrayExactlyOne|_|) (source:'a array) =
-        match source with
-        | null -> None
-        | _ ->
+    let private exceptionToOption (fnctn:'a -> 'b) (value:'a):'b option =
             try
-                source
-                |> Array.exactlyOne
+                value
+                |> fnctn
                 |> Some
             with
                 | _ -> None
 
-    let (|ArrayExists|_|) (predicate:'a -> bool) (source:'a array) =
-        match source with
+    let private arrayBind (binder:'a array -> 'b) (value:'a array):'b option =
+        match value with
         | null -> None
         | _ ->
-            source
-            |> Array.exists predicate
-            |> BoolToOption
+            value
+            |> binder
+            |> Some
 
-    let (|ArrayFind|_|) (predicate:'a -> bool) (source:'a array) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Array.tryFind predicate
-
-    let (|ArrayFindBack|_|) (predicate:'a -> bool) (source:'a array) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Array.tryFindBack predicate
-
-    let (|ArrayFindIndex|_|) (predicate:'a -> bool) (source:'a array) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Array.tryFindIndex predicate
-
-    let (|ArrayFindIndexBack|_|) (predicate:'a -> bool) (source:'a array) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Array.tryFindIndexBack predicate
-
-    let (|ArrayForAll|_|) (predicate:'a -> bool) (source:'a array) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Array.forall predicate
-            |> BoolToOption
-
-    let (|ArrayHead|_|) (source:'a array) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Array.tryHead
-
-    let (|ArrayItem|_|) (index:int) (source:'a array) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Array.tryItem index
-
-    let (|ArrayLast|_|) (source:'a array) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Array.tryLast
-
-    let (|ArrayPick|_|) (chooser:'a -> 'b option) (source:'a array) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Array.tryPick chooser
-
-    let (|ArrayTail|_|) (source:'a array) =
-        match source with
-        | null -> None
-        | _ ->
-            try
-                source
-                |> Array.tail
-                |> Some
-            with
-                | _ -> None
-
-    let (|ListContains|_|) (value:'a) (source:'a list) =
-        match source with
+    let private listBind (binder:'a list -> 'b) (value:'a list):'b option =
+        match value with
         | [] -> None
         | _ ->
-            source
-            |> List.contains value
-            |> BoolToOption
+            value
+            |> binder
+            |> Some
 
-    let (|ListExactlyOne|_|) (source:'a list) =
-        match source with
-        | [] -> None
-        | _ ->
-            try
-                source
-                |> List.exactlyOne
-                |> Some
-            with
-                | _ -> None
-
-    let (|ListExists|_|) (predicate:'a -> bool) (source:'a list) =
-        match source with
-        | [] -> None
-        | _ ->
-            source
-            |> List.exists predicate
-            |> BoolToOption
-
-    let (|ListFind|_|) (predicate:'a -> bool) (source:'a list) =
-        match source with
-        | [] -> None
-        | _ ->
-            source
-            |> List.tryFind predicate
-
-    let (|ListFindBack|_|) (predicate:'a -> bool) (source:'a list) =
-        match source with
-        | [] -> None
-        | _ ->
-            source
-            |> List.tryFindBack predicate
-
-    let (|ListFindIndex|_|) (predicate:'a -> bool) (source:'a list) =
-        match source with
-        | [] -> None
-        | _ ->
-            source
-            |> List.tryFindIndex predicate
-
-    let (|ListFindIndexBack|_|) (predicate:'a -> bool) (source:'a list) =
-        match source with
-        | [] -> None
-        | _ ->
-            source
-            |> List.tryFindIndexBack predicate
-
-    let (|ListForAll|_|) (predicate:'a -> bool) (source:'a list) =
-        match source with
-        | [] -> None
-        | _ ->
-            source
-            |> List.forall predicate
-            |> BoolToOption
-
-    let (|ListItem|_|) (index:int) (source:'a list) =
-        match source with
-        | [] -> None
-        | _ ->
-            source
-            |> List.tryItem index
-
-    let (|ListLast|_|) (source:'a list) =
-        match source with
-        | [] -> None
-        | _ ->
-            source
-            |> List.tryLast
-
-    let (|ListPick|_|) (chooser:'a -> 'b option) (source:'a list) =
-        match source with
-        | [] -> None
-        | _ ->
-            source
-            |> List.tryPick chooser
-
-    let (|SeqContains|_|) (value:'a) (source:'a seq) =
-        match source with
+    let private seqBind (binder:'a seq -> 'b) (value:'a seq):'b option =
+        match value with
         | null -> None
         | _ ->
-            source
-            |> Seq.contains value
-            |> BoolToOption
+            value
+            |> binder
+            |> Some
 
-    let (|SeqExactlyOne|_|) (source:'a seq) =
-        match source with
-        | null -> None
-        | _ ->
-            try
-                source
-                |> Seq.exactlyOne
-                |> Some
-            with
-                | _ -> None
+    let (|ArrayContains|_|) (value:'a) (source:'a array) = arrayBind (Array.contains value >> boolToOption) source
 
-    let (|SeqExists|_|) (predicate:'a -> bool) (source:'a seq) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Seq.exists predicate
-            |> BoolToOption
+    let (|ArrayExactlyOne|_|) (source:'a array) = arrayBind (exceptionToOption Array.exactlyOne) source
 
-    let (|SeqFind|_|) (predicate:'a -> bool) (source:'a seq) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Seq.tryFind predicate
+    let (|ArrayExists|_|) (predicate:'a -> bool) (source:'a array) = arrayBind (Array.exists predicate >> boolToOption) source
 
-    let (|SeqFindBack|_|) (predicate:'a -> bool) (source:'a seq) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Seq.tryFindBack predicate
+    let (|ArrayFind|_|) (predicate:'a -> bool) (source:'a array) = arrayBind (Array.tryFind predicate) source
 
-    let (|SeqFindIndex|_|) (predicate:'a -> bool) (source:'a seq) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Seq.tryFindIndex predicate
+    let (|ArrayFindBack|_|) (predicate:'a -> bool) (source:'a array) = arrayBind (Array.tryFindBack predicate) source
 
-    let (|SeqFindIndexBack|_|) (predicate:'a -> bool) (source:'a seq) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Seq.tryFindIndexBack predicate
+    let (|ArrayFindIndex|_|) (predicate:'a -> bool) (source:'a array) = arrayBind (Array.tryFindIndex predicate) source
 
-    let (|SeqForAll|_|) (predicate:'a -> bool) (source:'a seq) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Seq.forall predicate
-            |> BoolToOption
+    let (|ArrayFindIndexBack|_|) (predicate:'a -> bool) (source:'a array) = arrayBind (Array.tryFindIndexBack predicate) source
 
-    let (|SeqHead|_|) (source:'a seq) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Seq.tryHead
+    let (|ArrayForAll|_|) (predicate:'a -> bool) (source:'a array) = arrayBind (Array.forall predicate >> boolToOption) source
 
-    let (|SeqIsEmpty|_|) (source:'a seq) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Seq.isEmpty
-            |> BoolToOption
+    let (|ArrayHead|_|) (source:'a array) = arrayBind Array.tryHead source
 
-    let (|SeqItem|_|) (index:int) (source:'a seq) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Seq.tryItem index
+    let (|ArrayItem|_|) (index:int) (source:'a array) = arrayBind (Array.tryItem index) source
 
-    let (|SeqLast|_|) (source:'a seq) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Seq.tryLast
+    let (|ArrayLast|_|) (source:'a array) = arrayBind Array.tryLast source
 
-    let (|SeqPick|_|) (chooser:'a -> 'b option) (source:'a seq) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Seq.tryPick chooser
+    let (|ArrayPick|_|) (chooser:'a -> 'b option) (source:'a array) = arrayBind (Array.tryPick chooser) source
 
-    let (|SeqTail|_|) (source:'a seq) =
-        match source with
-        | null -> None
-        | _ ->
-            try
-                source
-                |> Seq.tail
-                |> Some
-            with
-                | _ -> None
+    let (|ArrayTail|_|) (source:'a array) = arrayBind (exceptionToOption Array.tail) source
+
+    let (|ListContains|_|) (value:'a) (source:'a list) = listBind (List.contains value >> boolToOption) source
+
+    let (|ListExactlyOne|_|) (source:'a list) = listBind (exceptionToOption List.exactlyOne) source
+
+    let (|ListExists|_|) (predicate:'a -> bool) (source:'a list) = listBind (List.exists predicate >> boolToOption) source
+
+    let (|ListFind|_|) (predicate:'a -> bool) (source:'a list) = listBind (List.tryFind predicate) source
+
+    let (|ListFindBack|_|) (predicate:'a -> bool) (source:'a list) = listBind (List.tryFindBack predicate) source
+
+    let (|ListFindIndex|_|) (predicate:'a -> bool) (source:'a list) = listBind (List.tryFindIndex predicate) source
+
+    let (|ListFindIndexBack|_|) (predicate:'a -> bool) (source:'a list) = listBind (List.tryFindIndexBack predicate) source
+
+    let (|ListForAll|_|) (predicate:'a -> bool) (source:'a list) = listBind (List.forall predicate >> boolToOption) source
+
+    let (|ListItem|_|) (index:int) (source:'a list) = listBind (List.tryItem index) source
+
+    let (|ListLast|_|) (source:'a list) = listBind List.tryLast source
+
+    let (|ListPick|_|) (chooser:'a -> 'b option) (source:'a list) = listBind (List.tryPick chooser) source
+
+    let (|SeqContains|_|) (value:'a) (source:'a seq) = seqBind (Seq.contains value >> boolToOption) source
+
+    let (|SeqExactlyOne|_|) (source:'a seq) = seqBind (exceptionToOption Seq.exactlyOne) source
+
+    let (|SeqExists|_|) (predicate:'a -> bool) (source:'a seq) = seqBind (Seq.exists predicate >> boolToOption) source
+
+    let (|SeqFind|_|) (predicate:'a -> bool) (source:'a seq) = seqBind (Seq.tryFind predicate) source
+
+    let (|SeqFindBack|_|) (predicate:'a -> bool) (source:'a seq) = seqBind (Seq.tryFindBack predicate) source
+
+    let (|SeqFindIndex|_|) (predicate:'a -> bool) (source:'a seq) = seqBind (Seq.tryFindIndex predicate) source
+
+    let (|SeqFindIndexBack|_|) (predicate:'a -> bool) (source:'a seq) = seqBind (Seq.tryFindIndexBack predicate) source
+
+    let (|SeqForAll|_|) (predicate:'a -> bool) (source:'a seq) = seqBind (Seq.forall predicate >> boolToOption) source
+
+    let (|SeqHead|_|) (source:'a seq) = seqBind Seq.tryHead source
+
+    let (|SeqIsEmpty|_|) (source:'a seq) = seqBind (Seq.isEmpty >> boolToOption) source
+
+    let (|SeqItem|_|) (index:int) (source:'a seq) = seqBind (Seq.tryItem index) source
+
+    let (|SeqLast|_|) (source:'a seq) = seqBind Seq.tryLast source
+
+    let (|SeqPick|_|) (chooser:'a -> 'b option) (source:'a seq) = seqBind (Seq.tryPick chooser) source
+
+    let (|SeqTail|_|) (source:'a seq) = seqBind (exceptionToOption Seq.tail) source
 
