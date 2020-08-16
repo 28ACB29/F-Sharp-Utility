@@ -4,110 +4,52 @@ open System
 
 module SequenceActivePatterns =
 
-    let private BoolToOption (result:bool) =
+    let private boolToOption (result:bool) =
         match result with
         | true -> Some()
         | false -> None
 
-    let (|SeqExactlyOne|_|) (source:'a seq) =
-        match source with
-        | null -> None
-        | _ ->
+    let private exceptionToOption (fnctn:'a -> 'b) (value:'a):'b option =
             try
-                source
-                |> Seq.exactlyOne
+                value
+                |> fnctn
                 |> Some
             with
                 | _ -> None
 
-    let (|SeqExists|_|) (predicate:'a -> bool) (source:'a seq) =
-        match source with
+    let private bind (binder:'a seq -> 'b) (value:'a seq):'b option =
+        match value with
         | null -> None
         | _ ->
-            source
-            |> Seq.exists predicate
-            |> BoolToOption
+            value
+            |> binder
+            |> Some
 
-    let (|SeqFind|_|) (predicate:'a -> bool) (source:'a seq) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Seq.tryFind predicate
+    let (|Contains|_|) (value:'a) (source:'a seq) = bind (Seq.contains value >> boolToOption) source
 
-    let (|SeqFindBack|_|) (predicate:'a -> bool) (source:'a seq) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Seq.tryFindBack predicate
+    let (|ExactlyOne|_|) (source:'a seq) = bind (exceptionToOption Seq.exactlyOne) source
 
-    let (|SeqFindIndex|_|) (predicate:'a -> bool) (source:'a seq) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Seq.tryFindIndex predicate
+    let (|Exists|_|) (predicate:'a -> bool) (source:'a seq) = bind (Seq.exists predicate >> boolToOption) source
 
-    let (|SeqFindIndexBack|_|) (predicate:'a -> bool) (source:'a seq) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Seq.tryFindIndexBack predicate
+    let (|Find|_|) (predicate:'a -> bool) (source:'a seq) = bind (Seq.tryFind predicate) source
 
-    let (|SeqForAll|_|) (predicate:'a -> bool) (source:'a seq) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Seq.forall predicate
-            |> BoolToOption
+    let (|FindBack|_|) (predicate:'a -> bool) (source:'a seq) = bind (Seq.tryFindBack predicate) source
 
-    let (|SeqHead|_|) (source:'a seq) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Seq.tryHead
+    let (|FindIndex|_|) (predicate:'a -> bool) (source:'a seq) = bind (Seq.tryFindIndex predicate) source
 
-    let (|SeqIsEmpty|_|) (source:'a seq) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Seq.isEmpty
-            |> BoolToOption
+    let (|FindIndexBack|_|) (predicate:'a -> bool) (source:'a seq) = bind (Seq.tryFindIndexBack predicate) source
 
-    let (|SeqItem|_|) (index:int) (source:'a seq) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Seq.tryItem index
+    let (|ForAll|_|) (predicate:'a -> bool) (source:'a seq) = bind (Seq.forall predicate >> boolToOption) source
 
-    let (|SeqLast|_|) (source:'a seq) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Seq.tryLast
+    let (|Head|_|) (source:'a seq) = bind Seq.tryHead source
 
-    let (|SeqPick|_|) (chooser:'a -> 'b option) (source:'a seq) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Seq.tryPick chooser
+    let (|IsEmpty|_|) (source:'a seq) = bind (Seq.isEmpty >> boolToOption) source
 
-    let (|SeqTail|_|) (source:'a seq) =
-        match source with
-        | null -> None
-        | _ ->
-            try
-                source
-                |> Seq.tail
-                |> Some
-            with
-                | _ -> None
+    let (|Item|_|) (index:int) (source:'a seq) = bind (Seq.tryItem index) source
+
+    let (|Last|_|) (source:'a seq) = bind Seq.tryLast source
+
+    let (|Pick|_|) (chooser:'a -> 'b option) (source:'a seq) = bind (Seq.tryPick chooser) source
+
+    let (|Tail|_|) (source:'a seq) = bind (exceptionToOption Seq.tail) source
 

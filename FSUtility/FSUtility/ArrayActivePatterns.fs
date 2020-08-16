@@ -4,110 +4,50 @@ open System
 
 module ArrayActivePatterns =
 
-    let private BoolToOption (result:bool) =
+    let private boolToOption (result:bool) =
         match result with
         | true -> Some()
         | false -> None
 
-    let (|ArrayContains|_|) (value:'a) (source:'a array) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Array.contains value
-            |> BoolToOption
-
-    let (|ArrayExactlyOne|_|) (source:'a array) =
-        match source with
-        | null -> None
-        | _ ->
+    let private exceptionToOption (fnctn:'a -> 'b) (value:'a):'b option =
             try
-                source
-                |> Array.exactlyOne
+                value
+                |> fnctn
                 |> Some
             with
                 | _ -> None
 
-    let (|ArrayExists|_|) (predicate:'a -> bool) (source:'a array) =
-        match source with
+    let private bind (binder:'a array -> 'b) (value:'a array):'b option =
+        match value with
         | null -> None
         | _ ->
-            source
-            |> Array.exists predicate
-            |> BoolToOption
+            value
+            |> binder
+            |> Some
 
-    let (|ArrayFind|_|) (predicate:'a -> bool) (source:'a array) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Array.tryFind predicate
+    let (|Contains|_|) (value:'a) (source:'a array) = bind (Array.contains value >> boolToOption) source
 
-    let (|ArrayFindBack|_|) (predicate:'a -> bool) (source:'a array) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Array.tryFindBack predicate
+    let (|ExactlyOne|_|) (source:'a array) = bind (exceptionToOption Array.exactlyOne) source
 
-    let (|ArrayFindIndex|_|) (predicate:'a -> bool) (source:'a array) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Array.tryFindIndex predicate
+    let (|Exists|_|) (predicate:'a -> bool) (source:'a array) = bind (Array.exists predicate >> boolToOption) source
 
-    let (|ArrayFindIndexBack|_|) (predicate:'a -> bool) (source:'a array) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Array.tryFindIndexBack predicate
+    let (|Find|_|) (predicate:'a -> bool) (source:'a array) = bind (Array.tryFind predicate) source
 
-    let (|ArrayForAll|_|) (predicate:'a -> bool) (source:'a array) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Array.forall predicate
-            |> BoolToOption
+    let (|FindBack|_|) (predicate:'a -> bool) (source:'a array) = bind (Array.tryFindBack predicate) source
 
-    let (|ArrayHead|_|) (source:'a array) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Array.tryHead
+    let (|FindIndex|_|) (predicate:'a -> bool) (source:'a array) = bind (Array.tryFindIndex predicate) source
 
-    let (|ArrayItem|_|) (index:int) (source:'a array) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Array.tryItem index
+    let (|FindIndexBack|_|) (predicate:'a -> bool) (source:'a array) = bind (Array.tryFindIndexBack predicate) source
 
-    let (|ArrayLast|_|) (source:'a array) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Array.tryLast
+    let (|ForAll|_|) (predicate:'a -> bool) (source:'a array) = bind (Array.forall predicate >> boolToOption) source
 
-    let (|ArrayPick|_|) (chooser:'a -> 'b option) (source:'a array) =
-        match source with
-        | null -> None
-        | _ ->
-            source
-            |> Array.tryPick chooser
+    let (|Head|_|) (source:'a array) = bind Array.tryHead source
 
-    let (|ArrayTail|_|) (source:'a array) =
-        match source with
-        | null -> None
-        | _ ->
-            try
-                source
-                |> Array.tail
-                |> Some
-            with
-                | _ -> None
+    let (|Item|_|) (index:int) (source:'a array) = bind (Array.tryItem index) source
+
+    let (|Last|_|) (source:'a array) = bind Array.tryLast source
+
+    let (|Pick|_|) (chooser:'a -> 'b option) (source:'a array) = bind (Array.tryPick chooser) source
+
+    let (|Tail|_|) (source:'a array) = bind (exceptionToOption Array.tail) source
 

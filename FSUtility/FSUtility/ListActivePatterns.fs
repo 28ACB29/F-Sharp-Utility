@@ -4,92 +4,46 @@ open System
 
 module ListActivePatterns =
 
-    let private BoolToOption (result:bool) =
+    let private boolToOption (result:bool) =
         match result with
         | true -> Some()
         | false -> None
 
-    let (|ListContains|_|) (value:'a) (source:'a list) =
-        match source with
-        | [] -> None
-        | _ ->
-            source
-            |> List.contains value
-            |> BoolToOption
-
-    let (|ListExactlyOne|_|) (source:'a list) =
-        match source with
-        | [] -> None
-        | _ ->
+    let private exceptionToOption (fnctn:'a -> 'b) (value:'a):'b option =
             try
-                source
-                |> List.exactlyOne
+                value
+                |> fnctn
                 |> Some
             with
                 | _ -> None
 
-    let (|ListExists|_|) (predicate:'a -> bool) (source:'a list) =
-        match source with
+    let private bind (binder:'a list -> 'b) (value:'a list):'b option =
+        match value with
         | [] -> None
         | _ ->
-            source
-            |> List.exists predicate
-            |> BoolToOption
+            value
+            |> binder
+            |> Some
 
-    let (|ListFind|_|) (predicate:'a -> bool) (source:'a list) =
-        match source with
-        | [] -> None
-        | _ ->
-            source
-            |> List.tryFind predicate
+    let (|Contains|_|) (value:'a) (source:'a list) = bind (List.contains value >> boolToOption) source
 
-    let (|ListFindBack|_|) (predicate:'a -> bool) (source:'a list) =
-        match source with
-        | [] -> None
-        | _ ->
-            source
-            |> List.tryFindBack predicate
+    let (|ExactlyOne|_|) (source:'a list) = bind (exceptionToOption List.exactlyOne) source
 
-    let (|ListFindIndex|_|) (predicate:'a -> bool) (source:'a list) =
-        match source with
-        | [] -> None
-        | _ ->
-            source
-            |> List.tryFindIndex predicate
+    let (|Exists|_|) (predicate:'a -> bool) (source:'a list) = bind (List.exists predicate >> boolToOption) source
 
-    let (|ListFindIndexBack|_|) (predicate:'a -> bool) (source:'a list) =
-        match source with
-        | [] -> None
-        | _ ->
-            source
-            |> List.tryFindIndexBack predicate
+    let (|Find|_|) (predicate:'a -> bool) (source:'a list) = bind (List.tryFind predicate) source
 
-    let (|ListForAll|_|) (predicate:'a -> bool) (source:'a list) =
-        match source with
-        | [] -> None
-        | _ ->
-            source
-            |> List.forall predicate
-            |> BoolToOption
+    let (|FindBack|_|) (predicate:'a -> bool) (source:'a list) = bind (List.tryFindBack predicate) source
 
-    let (|ListItem|_|) (index:int) (source:'a list) =
-        match source with
-        | [] -> None
-        | _ ->
-            source
-            |> List.tryItem index
+    let (|FindIndex|_|) (predicate:'a -> bool) (source:'a list) = bind (List.tryFindIndex predicate) source
 
-    let (|ListLast|_|) (source:'a list) =
-        match source with
-        | [] -> None
-        | _ ->
-            source
-            |> List.tryLast
+    let (|FindIndexBack|_|) (predicate:'a -> bool) (source:'a list) = bind (List.tryFindIndexBack predicate) source
 
-    let (|ListPick|_|) (chooser:'a -> 'b option) (source:'a list) =
-        match source with
-        | [] -> None
-        | _ ->
-            source
-            |> List.tryPick chooser
+    let (|ForAll|_|) (predicate:'a -> bool) (source:'a list) = bind (List.forall predicate >> boolToOption) source
+
+    let (|Item|_|) (index:int) (source:'a list) = bind (List.tryItem index) source
+
+    let (|Last|_|) (source:'a list) = bind List.tryLast source
+
+    let (|Pick|_|) (chooser:'a -> 'b option) (source:'a list) = bind (List.tryPick chooser) source
 
