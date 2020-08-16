@@ -14,15 +14,27 @@ module String =
             |> String.IsInterned
             |> Some
 
-    let (|NullOrEmpty|_|) (value:string) =
-        match String.IsNullOrEmpty(value) with
+    let private boolToOption (value:bool):unit option =
+        match value with
         | true -> Some()
         | false -> None
 
+    let (|NullOrEmpty|_|) (value:string) =
+        String.IsNullOrEmpty(value)
+        |> boolToOption
+
     let (|NullOrWhiteSpace|_|) (value:string) =
-        match String.IsNullOrWhiteSpace(value) with
-        | true -> Some()
-        | false -> None
+        String.IsNullOrWhiteSpace(value)
+        |> boolToOption
+
+    let (|Normalized|_|) (normalizationFormOption: NormalizationForm option) (s:string) =
+        match normalizationFormOption with
+        | None ->
+            s.IsNormalized()
+            |> boolToOption
+        | Some(normalizationForm: NormalizationForm) ->
+            s.IsNormalized(normalizationForm)
+            |> boolToOption
 
     let Slice (startIndex:int) (endIndex:int) (s:string):string = s.Substring(startIndex, endIndex - startIndex)
 
@@ -33,11 +45,6 @@ module String =
     let IndexOfAny (ofAny:char array) (s:string):int = s.IndexOfAny(ofAny)
 
     let Insert (startIndex:int) (value:string) (s:string):string = s.Insert(startIndex, value)
-
-    let IsNormalized (normalizationFormOption: NormalizationForm option) (s:string):bool =
-        match normalizationFormOption with
-        | None -> s.IsNormalized()
-        | Some(normalizationForm: NormalizationForm) -> s.IsNormalized(normalizationForm)
 
     let LastIndexOf (value:char) (s:string):int = s.LastIndexOf(value)
 
