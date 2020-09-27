@@ -4,12 +4,18 @@ open System
 
 module ListActivePatterns =
 
-    let private boolToOption (result:bool) =
-        match result with
-        | true -> Some()
-        | false -> None
+    let private bindBool (fnctn:'a list -> bool) (value:'a list) =
+        match value with
+        | [] -> None
+        | _ ->
+            match fnctn value with
+            | true -> Some()
+            | false -> None
 
-    let private exceptionToOption (fnctn:'a -> 'b) (value:'a):'b option =
+    let private bindException (fnctn:'a -> 'b) (value:'a):'b option =
+        match value with
+        | [] -> None
+        | _ ->
             try
                 value
                 |> fnctn
@@ -25,11 +31,11 @@ module ListActivePatterns =
             |> binder
             |> Some
 
-    let (|Contains|_|) (value:'a) (source:'a list) = bind (List.contains value >> boolToOption) source
+    let (|Contains|_|) (value:'a) (source:'a list) = bindBool (List.contains value) source
 
-    let (|ExactlyOne|_|) (source:'a list) = bind (exceptionToOption List.exactlyOne) source
+    let (|ExactlyOne|_|) (source:'a list) = bindException List.exactlyOne source
 
-    let (|Exists|_|) (predicate:'a -> bool) (source:'a list) = bind (List.exists predicate >> boolToOption) source
+    let (|Exists|_|) (predicate:'a -> bool) (source:'a list) = bindBool (List.exists predicate) source
 
     let (|Find|_|) (predicate:'a -> bool) (source:'a list) = bind (List.tryFind predicate) source
 
@@ -39,7 +45,7 @@ module ListActivePatterns =
 
     let (|FindIndexBack|_|) (predicate:'a -> bool) (source:'a list) = bind (List.tryFindIndexBack predicate) source
 
-    let (|ForAll|_|) (predicate:'a -> bool) (source:'a list) = bind (List.forall predicate >> boolToOption) source
+    let (|ForAll|_|) (predicate:'a -> bool) (source:'a list) = bindBool (List.forall predicate) source
 
     let (|Item|_|) (index:int) (source:'a list) = bind (List.tryItem index) source
 

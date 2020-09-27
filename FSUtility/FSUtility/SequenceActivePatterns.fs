@@ -4,12 +4,18 @@ open System
 
 module SequenceActivePatterns =
 
-    let private boolToOption (result:bool) =
-        match result with
-        | true -> Some()
-        | false -> None
+    let private bindBool (fnctn:'a seq -> bool) (value:'a seq) =
+        match value with
+        | null -> None
+        | _ ->
+            match fnctn value with
+            | true -> Some()
+            | false -> None
 
-    let private exceptionToOption (fnctn:'a -> 'b) (value:'a):'b option =
+    let private bindException (fnctn:'a -> 'b) (value:'a):'b option =
+        match value with
+        | null -> None
+        | _ ->
             try
                 value
                 |> fnctn
@@ -25,11 +31,11 @@ module SequenceActivePatterns =
             |> binder
             |> Some
 
-    let (|Contains|_|) (value:'a) (source:'a seq) = bind (Seq.contains value >> boolToOption) source
+    let (|Contains|_|) (value:'a) (source:'a seq) = bindBool (Seq.contains value) source
 
-    let (|ExactlyOne|_|) (source:'a seq) = bind (exceptionToOption Seq.exactlyOne) source
+    let (|ExactlyOne|_|) (source:'a seq) = bindException Seq.exactlyOne source
 
-    let (|Exists|_|) (predicate:'a -> bool) (source:'a seq) = bind (Seq.exists predicate >> boolToOption) source
+    let (|Exists|_|) (predicate:'a -> bool) (source:'a seq) = bindBool (Seq.exists predicate) source
 
     let (|Find|_|) (predicate:'a -> bool) (source:'a seq) = bind (Seq.tryFind predicate) source
 
@@ -39,11 +45,11 @@ module SequenceActivePatterns =
 
     let (|FindIndexBack|_|) (predicate:'a -> bool) (source:'a seq) = bind (Seq.tryFindIndexBack predicate) source
 
-    let (|ForAll|_|) (predicate:'a -> bool) (source:'a seq) = bind (Seq.forall predicate >> boolToOption) source
+    let (|ForAll|_|) (predicate:'a -> bool) (source:'a seq) = bindBool (Seq.forall predicate) source
 
     let (|Head|_|) (source:'a seq) = bind Seq.tryHead source
 
-    let (|IsEmpty|_|) (source:'a seq) = bind (Seq.isEmpty >> boolToOption) source
+    let (|IsEmpty|_|) (source:'a seq) = bindBool (Seq.isEmpty) source
 
     let (|Item|_|) (index:int) (source:'a seq) = bind (Seq.tryItem index) source
 
@@ -51,5 +57,5 @@ module SequenceActivePatterns =
 
     let (|Pick|_|) (chooser:'a -> 'b option) (source:'a seq) = bind (Seq.tryPick chooser) source
 
-    let (|Tail|_|) (source:'a seq) = bind (exceptionToOption Seq.tail) source
+    let (|Tail|_|) (source:'a seq) = bindException Seq.tail source
 
