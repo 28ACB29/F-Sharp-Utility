@@ -2,7 +2,7 @@
 
 open System
 
-module ValueType =
+module MonadValueType =
 
     let (|Null|Exists|) (nullable:'a when 'a:null) =
         match nullable with

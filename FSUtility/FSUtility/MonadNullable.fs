@@ -2,7 +2,7 @@
 
 open System
 
-module Nullable =
+module MonadNullable =
 
     let private roundTrip (func:'a option -> 'b option):(Nullable<'a> -> Nullable<'b>) =
         Option.ofNullable
