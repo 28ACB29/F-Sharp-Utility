@@ -56,9 +56,10 @@
     <Compile Include="ListIndexed.fs" />
     <Compile Include="Memoizer.fs" />
     <Compile Include="Modulo.fs" />
-    <Compile Include="MonadNullable.fs" />
+    <Compile Include="OptionNullable.fs" />
     <Compile Include="MonadValueType.fs" />
     <Compile Include="NumberType.fs" />
+    <Compile Include="ReaderAction.fs" />
     <Compile Include="SequenceActivePatterns.fs" />
     <Compile Include="SequenceIndexed.fs" />
     <Compile Include="Statistics.fs" />
