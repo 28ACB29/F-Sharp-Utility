@@ -57,15 +57,16 @@
     <Compile Include="Memoizer.fs" />
     <Compile Include="Modulo.fs" />
     <Compile Include="OptionNullable.fs" />
-    <Compile Include="MonadValueType.fs" />
+    <Compile Include="OptionValueType.fs" />
     <Compile Include="NumberType.fs" />
     <Compile Include="ReaderAction.fs" />
+    <Compile Include="RegularExpression.fs" />
     <Compile Include="SequenceActivePatterns.fs" />
     <Compile Include="SequenceIndexed.fs" />
     <Compile Include="Statistics.fs" />
+    <Compile Include="String.fs" />
     <Compile Include="StringConvert.fs" />
     <Compile Include="Tuple.fs" />
-    <Compile Include="String.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />

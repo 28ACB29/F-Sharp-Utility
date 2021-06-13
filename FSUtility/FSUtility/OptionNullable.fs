@@ -29,6 +29,11 @@ module OptionNullable =
         | Null -> 0
         | _ -> 1
 
+    let defaultValue (nullable:Nullable<'a>):'a =
+        match nullable with
+        | Null -> Unchecked.defaultof<'a>
+        | Exists(value:'a) -> value
+
     let exists (predicate:Nullable<'a> -> bool) (nullable:Nullable<'a>):bool =
         match nullable with
         | Null -> false
@@ -42,11 +47,6 @@ module OptionNullable =
             | true -> nullable
             | false -> Nullable<'a>()
 
-    let forAll (predicate:Nullable<'a> -> bool) (nullable:Nullable<'a>):bool =
-        match nullable with
-        | Null -> true
-        | _ -> predicate nullable
-
     let fold (folder:'b -> 'a -> 'b) (state:'b) (nullable:Nullable<'a>):'b =
         match nullable with
         | Null -> state
@@ -56,6 +56,11 @@ module OptionNullable =
         match nullable with
         | Null -> state
         | Exists(value:'a) -> folder value state
+
+    let forAll (predicate:Nullable<'a> -> bool) (nullable:Nullable<'a>):bool =
+        match nullable with
+        | Null -> true
+        | _ -> predicate nullable
 
     let isNone (nullable:Nullable<'a>):bool =
         match nullable with
@@ -67,10 +72,10 @@ module OptionNullable =
         | Null -> false
         | _ -> true
 
-    let iter (action:Nullable<'a> -> unit) (nullable:Nullable<'a>):unit =
+    let iter (action:'a -> unit) (nullable:Nullable<'a>):unit =
         match nullable with
         | Null -> ()
-        | _ -> action nullable
+        | Exists(value:'a) -> action value
 
     let map (mapper:'a -> 'b) (nullable:Nullable<'a>):Nullable<'b> =
         match nullable with
@@ -87,6 +92,11 @@ module OptionNullable =
         | Exists(value:'a), Exists(value2:'b), Exists(value3:'c) -> Nullable<'d>(mapper value value2 value3)
         | _ -> Nullable<'d>()
 
+    let ofOption (option:'a option):Nullable<'a> =
+        match option with
+        | None -> Nullable<'a>()
+        | Some(value:'a) -> Nullable<'a>(value)
+
     let toArray (nullable:Nullable<'a>):'a array =
         match nullable with
         | Null -> [||]
@@ -96,3 +106,8 @@ module OptionNullable =
         match nullable with
         | Null -> []
         | Exists(value:'a) -> [value]
+
+    let toOption (nullable:Nullable<'a>):'a option =
+        match nullable with
+        | Null -> None
+        | Exists(value:'a) -> Some(value)
