@@ -27,12 +27,12 @@ module String =
         String.IsNullOrWhiteSpace(value)
         |> boolToOption
 
-    let (|Normalized|_|) (normalizationFormOption: NormalizationForm option) (s:string) =
+    let (|Normalized|_|) (normalizationFormOption:NormalizationForm option) (s:string) =
         match normalizationFormOption with
         | None ->
             s.IsNormalized()
             |> boolToOption
-        | Some(normalizationForm: NormalizationForm) ->
+        | Some(normalizationForm:NormalizationForm) ->
             s.IsNormalized(normalizationForm)
             |> boolToOption
 
@@ -50,25 +50,25 @@ module String =
 
     let LastIndexOfAny (ofAny:char array) (s:string):int = s.LastIndexOfAny(ofAny)
 
-    let Normalize (normalizationFormOption: NormalizationForm option) (s:string):string =
+    let Normalize (normalizationFormOption:NormalizationForm option) (s:string):string =
         match normalizationFormOption with
         | None -> s.Normalize()
-        | Some(normalizationForm: NormalizationForm) -> s.Normalize(normalizationForm)
+        | Some(normalizationForm:NormalizationForm) -> s.Normalize(normalizationForm)
 
     let PadLeft (totalWidth:int) (paddingCharOption:char option) (s:string):string =
         match paddingCharOption with
         | None -> s.PadLeft(totalWidth)
-        | Some(paddingChar: char) -> s.PadLeft(totalWidth, paddingChar)
+        | Some(paddingChar:char) -> s.PadLeft(totalWidth, paddingChar)
 
     let PadRight (totalWidth:int) (paddingCharOption:char option) (s:string):string =
         match paddingCharOption with
         | None -> s.PadRight(totalWidth)
-        | Some(paddingChar: char) -> s.PadRight(totalWidth, paddingChar)
+        | Some(paddingChar:char) -> s.PadRight(totalWidth, paddingChar)
 
     let Remove (startIndex:int) (countOption:int option) (s:string):string =
         match countOption with
         | None -> s.Remove(startIndex)
-        | Some(count: int) -> s.Remove(startIndex, count)
+        | Some(count:int) -> s.Remove(startIndex, count)
 
     let Replace (oldValue:string) (newValue:string) (s:string):string = s.Replace(oldValue, newValue)
 
@@ -77,7 +77,7 @@ module String =
     let Substring (startIndex:int) (lengthOption:int option) (s:string):string =
         match lengthOption with
         | None -> s.Substring(startIndex)
-        | Some(length: int) -> s.Substring(startIndex, length)
+        | Some(length:int) -> s.Substring(startIndex, length)
 
     let StartsWith (value:string) (s:string):bool = s.StartsWith(value)
 
@@ -86,21 +86,21 @@ module String =
     let ToLower (cultureInfoOption:CultureInfo option) (s:string):string =
         match cultureInfoOption with
         | None -> s.ToLower()
-        | Some(cultureInfo: CultureInfo) -> s.ToLower(cultureInfo)
+        | Some(cultureInfo:CultureInfo) -> s.ToLower(cultureInfo)
 
     let ToLowerInvariant (s:string):string = s.ToLowerInvariant()
 
     let ToUpper (cultureInfoOption:CultureInfo option) (s:string):string =
         match cultureInfoOption with
         | None -> s.ToLower()
-        | Some(cultureInfo: CultureInfo) -> s.ToLower(cultureInfo)
+        | Some(cultureInfo:CultureInfo) -> s.ToLower(cultureInfo)
 
     let ToUpperInvariant (s:string):string = s.ToUpperInvariant()
 
     let Trim (trimCharsOption:char array option) (s:string):string =
         match trimCharsOption with
         | None -> s.Trim()
-        | Some(trimChars: char array) -> s.Trim(trimChars)
+        | Some(trimChars:char array) -> s.Trim(trimChars)
 
     let TrimEnd (trimChars:char array) (s:string):string = s.TrimEnd(trimChars)
 
