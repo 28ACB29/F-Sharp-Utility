@@ -24,6 +24,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <DocumentationFile>bin\$(Configuration)\$(AssemblyName).XML</DocumentationFile>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsAsErrors />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -52,14 +54,15 @@
     <Compile Include="Comparison.fs" />
     <Compile Include="Converter.fs" />
     <Compile Include="Deque.fs" />
+    <Compile Include="DynamicProgramming.fs" />
     <Compile Include="ListActivePatterns.fs" />
     <Compile Include="ListIndexed.fs" />
-    <Compile Include="Memoizer.fs" />
     <Compile Include="Modulo.fs" />
     <Compile Include="OptionNullable.fs" />
     <Compile Include="OptionValueType.fs" />
     <Compile Include="NumberType.fs" />
-    <Compile Include="ReaderAction.fs" />
+    <Compile Include="ProtectedInteger.fs" />
+    <Compile Include="WriterAction.fs" />
     <Compile Include="RegularExpression.fs" />
     <Compile Include="SequenceActivePatterns.fs" />
     <Compile Include="SequenceIndexed.fs" />
