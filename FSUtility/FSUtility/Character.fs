@@ -14,7 +14,7 @@ module Character =
 
     let (|Control|_|) (character:char) =
         character
-        |> yieldIfTrue Char.IsControl 
+        |> yieldIfTrue Char.IsControl
 
     let (|Digit|_|) (character:char) =
         character
