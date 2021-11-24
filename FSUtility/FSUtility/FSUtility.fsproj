@@ -62,7 +62,6 @@
     <Compile Include="OptionValueType.fs" />
     <Compile Include="NumberType.fs" />
     <Compile Include="ProtectedInteger.fs" />
-    <Compile Include="WriterAction.fs" />
     <Compile Include="RegularExpression.fs" />
     <Compile Include="SequenceActivePatterns.fs" />
     <Compile Include="SequenceIndexed.fs" />
@@ -70,6 +69,7 @@
     <Compile Include="String.fs" />
     <Compile Include="StringConvert.fs" />
     <Compile Include="Tuple.fs" />
+    <Compile Include="WriterAction.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
