@@ -19,6 +19,10 @@ module String =
         | true -> Some()
         | false -> None
 
+    let (|EndsWith|_|) (value:string) (s:string) =
+        s.EndsWith(value)
+        |> boolToOption
+
     let (|NullOrEmpty|_|) (value:string) =
         String.IsNullOrEmpty(value)
         |> boolToOption
@@ -36,72 +40,83 @@ module String =
             s.IsNormalized(normalizationForm)
             |> boolToOption
 
-    let Slice (startIndex:int) (endIndex:int) (s:string):string = s.Substring(startIndex, endIndex - startIndex)
+    let (|StartsWith|_|) (value:string) (s:string) =
+        s.StartsWith(value)
+        |> boolToOption
 
-    let EndsWith (value:string) (s:string):bool = s.EndsWith(value)
+    let slice (startIndex:int) (endIndex:int) (s:string):string = s.Substring(startIndex, endIndex - startIndex)
 
-    let IndexOf (value:char) (s:string):int = s.IndexOf(value)
+    let chars (index:int) (s:string):char = s.Chars index
 
-    let IndexOfAny (ofAny:char array) (s:string):int = s.IndexOfAny(ofAny)
+    let compareOrdinal (options:(int * int * int) option) (strA:string) (strB:string):int =
+        match options with
+        | None ->  String.CompareOrdinal(strA, strB)
+        | Some((indexA:int), (indexB:int), (length:int)) ->  String.CompareOrdinal(strA, indexA, strB, indexB, length)
 
-    let Insert (startIndex:int) (value:string) (s:string):string = s.Insert(startIndex, value)
+    let indexOf (value:char) (s:string):int = s.IndexOf(value)
 
-    let LastIndexOf (value:char) (s:string):int = s.LastIndexOf(value)
+    let indexOfAny (ofAny:char array) (s:string):int = s.IndexOfAny(ofAny)
 
-    let LastIndexOfAny (ofAny:char array) (s:string):int = s.LastIndexOfAny(ofAny)
+    let insert (startIndex:int) (value:string) (s:string):string = s.Insert(startIndex, value)
 
-    let Normalize (normalizationFormOption:NormalizationForm option) (s:string):string =
+    let lastIndexOf (value:char) (s:string):int = s.LastIndexOf(value)
+
+    let lastIndexOfAny (ofAny:char array) (s:string):int = s.LastIndexOfAny(ofAny)
+
+    let length (s:string):int = s.Length
+
+    let normalize (normalizationFormOption:NormalizationForm option) (s:string):string =
         match normalizationFormOption with
         | None -> s.Normalize()
         | Some(normalizationForm:NormalizationForm) -> s.Normalize(normalizationForm)
 
-    let PadLeft (totalWidth:int) (paddingCharOption:char option) (s:string):string =
+    let padLeft (paddingCharOption:char option) (totalWidth:int) (s:string):string =
         match paddingCharOption with
         | None -> s.PadLeft(totalWidth)
         | Some(paddingChar:char) -> s.PadLeft(totalWidth, paddingChar)
 
-    let PadRight (totalWidth:int) (paddingCharOption:char option) (s:string):string =
+    let padRight (paddingCharOption:char option) (totalWidth:int) (s:string):string =
         match paddingCharOption with
         | None -> s.PadRight(totalWidth)
         | Some(paddingChar:char) -> s.PadRight(totalWidth, paddingChar)
 
-    let Remove (startIndex:int) (countOption:int option) (s:string):string =
+    let remove (countOption:int option) (startIndex:int) (s:string):string =
         match countOption with
         | None -> s.Remove(startIndex)
         | Some(count:int) -> s.Remove(startIndex, count)
 
-    let Replace (oldValue:string) (newValue:string) (s:string):string = s.Replace(oldValue, newValue)
+    let replaceChar (oldChar:char) (newChar:char) (s:string):string = s.Replace(oldChar, newChar)
 
-    let Split (separator:char array) (s:string):string array = s.Split(separator)
+    let replaceString (oldValue:string) (newValue:string) (s:string):string = s.Replace(oldValue, newValue)
 
-    let Substring (startIndex:int) (lengthOption:int option) (s:string):string =
+    let split (separator:char array) (s:string):string array = s.Split(separator)
+
+    let substring (startIndex:int) (lengthOption:int option) (s:string):string =
         match lengthOption with
         | None -> s.Substring(startIndex)
         | Some(length:int) -> s.Substring(startIndex, length)
 
-    let StartsWith (value:string) (s:string):bool = s.StartsWith(value)
+    let toCharArray (s:string):char array = s.ToCharArray()
 
-    let ToCharArray (s:string):char array = s.ToCharArray()
-
-    let ToLower (cultureInfoOption:CultureInfo option) (s:string):string =
+    let toLower (cultureInfoOption:CultureInfo option) (s:string):string =
         match cultureInfoOption with
         | None -> s.ToLower()
         | Some(cultureInfo:CultureInfo) -> s.ToLower(cultureInfo)
 
-    let ToLowerInvariant (s:string):string = s.ToLowerInvariant()
+    let toLowerInvariant (s:string):string = s.ToLowerInvariant()
 
-    let ToUpper (cultureInfoOption:CultureInfo option) (s:string):string =
+    let toUpper (cultureInfoOption:CultureInfo option) (s:string):string =
         match cultureInfoOption with
         | None -> s.ToLower()
         | Some(cultureInfo:CultureInfo) -> s.ToLower(cultureInfo)
 
-    let ToUpperInvariant (s:string):string = s.ToUpperInvariant()
+    let toUpperInvariant (s:string):string = s.ToUpperInvariant()
 
-    let Trim (trimCharsOption:char array option) (s:string):string =
+    let trim (trimCharsOption:char array option) (s:string):string =
         match trimCharsOption with
         | None -> s.Trim()
         | Some(trimChars:char array) -> s.Trim(trimChars)
 
-    let TrimEnd (trimChars:char array) (s:string):string = s.TrimEnd(trimChars)
+    let trimEnd (trimChars:char array) (s:string):string = s.TrimEnd(trimChars)
 
     let TrimStart (trimChars:char array) (s:string):string = s.TrimStart(trimChars)
