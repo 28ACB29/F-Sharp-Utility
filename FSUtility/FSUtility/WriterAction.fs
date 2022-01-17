@@ -13,7 +13,7 @@ module WriterAction =
         match sideEffectA with
         | SideEffect((value:'a), (action:Action<'a>)) ->
             action.Invoke value
-            let newAction:Action<'b> = Action<'b>(func >> ignore)
+            let newAction:Action<'b> = Action<'b>(ignore)
             SideEffect(func value, newAction)
 
     let rtrn (value:'a) (action:Action<'a>):SideEffect<'a> = SideEffect((value:'a), (action:Action<'a>))
@@ -23,7 +23,7 @@ module WriterAction =
         | SideEffect((func:'a -> 'b), (actionFunc:Action<'a -> 'b>)), SideEffect((value:'a), (action:Action<'a>)) ->
             let newAction:Action<'b> =
                 action.Invoke value
-                Action<'b>(func)
+                Action<'b>(ignore)
             SideEffect(func value, newAction)
 
     let bind (sideEffectFunc:'a -> SideEffect<'b>) (sideEffectA:SideEffect<'a>):SideEffect<'b> =
