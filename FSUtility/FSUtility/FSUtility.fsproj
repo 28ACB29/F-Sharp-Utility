@@ -10,7 +10,7 @@
     <RootNamespace>FSUtility</RootNamespace>
     <AssemblyName>FSUtility</AssemblyName>
     <UseStandardResourceNames>true</UseStandardResourceNames>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Name>FSUtility</Name>
     <TargetFrameworkProfile />
@@ -70,6 +70,7 @@
     <Compile Include="StringConvert.fs" />
     <Compile Include="Tuple.fs" />
     <Compile Include="WriterAction.fs" />
+    <Compile Include="XML.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
@@ -80,6 +81,7 @@
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
