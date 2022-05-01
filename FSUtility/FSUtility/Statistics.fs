@@ -22,7 +22,7 @@ module Statistics =
             |> Array.sortBy (fun (item:'a, _) -> item)
         mostCommon.[0] |> fst
 
-    let quartiles (data:'a array):('a * 'a * 'a) =
+    let quartiles (data:double array):(double * double * double) =
         let length:int = Array.length data
         match length % 2 with
         | 0 -> (median(data.[..length / 2 - 1]), median(data), median(data.[length / 2..]))
