@@ -46,7 +46,6 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <None Include="Script.fsx" />
-    <Content Include="packages.config" />
     <Compile Include="ArrayActivePatterns.fs" />
     <Compile Include="ArrayIndexed.fs" />
     <Compile Include="BaseConvert.fs" />
@@ -70,7 +69,10 @@
     <Compile Include="StringConvert.fs" />
     <Compile Include="Tuple.fs" />
     <Compile Include="WriterAction.fs" />
-    <Compile Include="XML.fs" />
+    <Compile Include="XMLNode.fs" />
+    <Compile Include="XMLReader.fs" />
+    <Compile Include="XMLWriter.fs" />
+    <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
@@ -78,7 +80,6 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.ValueTuple">
-      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml" />

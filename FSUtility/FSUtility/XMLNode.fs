@@ -5,9 +5,7 @@ open System.Threading.Tasks
 open System.Xml
 open System.Xml.Schema
 
-module XML =
-
-    // Start XMLNode
+module XMLNode = 
 
     let private boolToOption (value:bool):unit option =
         match value with
@@ -122,105 +120,3 @@ module XML =
     let writeContentTo (w:XmlWriter) (node:'a when 'a :> XmlNode):unit = node.WriteContentTo(w)
 
     let writeTo (w:XmlWriter) (node:'a when 'a :> XmlNode):unit = node.WriteTo(w)
-
-    // End XMLNode
-
-    // Start XMLReader
-    
-    let (|ReadBinaryContent|_|) (reader:'a when 'a :> XmlReader) =
-        reader.CanReadBinaryContent
-        |> boolToOption
-        
-    let (|ReadValueChunk|_|) (reader:'a when 'a :> XmlReader) =
-        reader.CanReadValueChunk
-        |> boolToOption
-        
-    let (|ResolveEntity|_|) (reader:'a when 'a :> XmlReader) =
-        reader.CanResolveEntity
-        |> boolToOption
-        
-    let (|EOF|_|) (reader:'a when 'a :> XmlReader) =
-        reader.EOF
-        |> boolToOption
-        
-    let (|Default|_|) (reader:'a when 'a :> XmlReader) =
-        reader.IsDefault
-        |> boolToOption
-        
-    let (|EmptyElement|_|) (reader:'a when 'a :> XmlReader) =
-        reader.IsEmptyElement
-        |> boolToOption
-        
-    let (|Attributes|_|) (reader:'a when 'a :> XmlReader) =
-        reader.HasAttributes
-        |> boolToOption
-
-    let attributeCount (reader:'a when 'a :> XmlReader):int = reader.AttributeCount
-    
-    let baseURI (reader:'a when 'a :> XmlReader):string = reader.BaseURI
-    
-    let depth (reader:'a when 'a :> XmlReader):int = reader.Depth
-    
-    let localName (reader:'a when 'a :> XmlReader):string = reader.LocalName
-    
-    let name (reader:'a when 'a :> XmlReader):string = reader.Name
-    
-    let namespaceURI (reader:'a when 'a :> XmlReader):string = reader.NamespaceURI
-    
-    let nameTable (reader:'a when 'a :> XmlReader):XmlNameTable = reader.NameTable
-    
-    let nodeType (reader:'a when 'a :> XmlReader):XmlNodeType = reader.NodeType
-    
-    let prefix (reader:'a when 'a :> XmlReader):string = reader.Prefix
-    
-    let quoteChar (reader:'a when 'a :> XmlReader):char = reader.QuoteChar
-    
-    let readState (reader:'a when 'a :> XmlReader):ReadState = reader.ReadState
-    
-    let schemaInfo (reader:'a when 'a :> XmlReader):IXmlSchemaInfo = reader.SchemaInfo
-    
-    let settings (reader:'a when 'a :> XmlReader):XmlReaderSettings = reader.Settings
-    
-    let value (reader:'a when 'a :> XmlReader):string = reader.Value
-    
-    let valueType (reader:'a when 'a :> XmlReader):Type = reader.ValueType
-    
-    let xmlLang (reader:'a when 'a :> XmlReader):string = reader.XmlLang
-    
-    let xmlSpace (reader:'a when 'a :> XmlReader):string = reader.XmlSpace
-
-    let close (reader:'a when 'a :> XmlReader):unit = reader.Close()
-
-    let isName (str:string):bool = XmlReader.IsName(str)
-    
-    let isNameToken (str:string):bool = XmlReader.IsNameToken(str)
-    
-    let lookupNamespace (prefix:string) (reader:'a when 'a :> XmlReader):string = reader.LookupNamespace(prefix)
-    
-    let moveToContent (reader:'a when 'a :> XmlReader):unit = reader.MoveToContent()
-    
-    let moveToContentAsync (reader:'a when 'a :> XmlReader):Task<XmlNodeType> = reader.MoveToContentAsync()
-    
-    let moveToElement (reader:'a when 'a :> XmlReader):bool = reader.MoveToElement()
-    
-    let moveToFirstAttribute (reader:'a when 'a :> XmlReader):bool = reader.MoveToFirstAttribute()
-    
-    let moveToNextAttribute (reader:'a when 'a :> XmlReader):bool = reader.MoveToNextAttribute()
-    
-    let resolveEntity (reader:'a when 'a :> XmlReader):unit = reader.ResolveEntity()
-
-    // End XMLReader
-
-    // Start XMLWriter
-    
-    let settings (writer:'a when 'a :> XmlWriter):XmlWriterSettings = writer.Settings
-    
-    let writeState (writer:'a when 'a :> XmlWriter):WriteState = writer.WriteState
-    
-    let xmlLang (writer:'a when 'a :> XmlWriter):string = writer.XmlLang
-    
-    let xmlSpace (writer:'a when 'a :> XmlWriter):string = writer.XmlSpace
-
-    let close  (writer:'a when 'a :> XmlWriter):unit = writer.Close()
-
-    // End XMLWriter
