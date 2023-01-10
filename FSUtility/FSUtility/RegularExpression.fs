@@ -9,19 +9,19 @@ type configuration =
     | OptionsTimeout of RegexOptions * TimeSpan
 
 type replaceMember =
-    | Replacement of String
+    | Replacement of string
     | Evaluator of MatchEvaluator
-    | ReplacementCount of String * int
+    | ReplacementCount of string * int
     | EvaluatorCount of MatchEvaluator * int
-    | ReplacementCountStartAt of String * int * int
+    | ReplacementCountStartAt of string * int * int
     | EvaluatorCountStartAt of MatchEvaluator * int * int
 
 type replaceStatic =
-    | Replacement of String
+    | Replacement of string
     | Evaluator of MatchEvaluator
-    | ReplacementOption of String * RegexOptions
+    | ReplacementOption of string * RegexOptions
     | EvaluatorOption of MatchEvaluator * RegexOptions
-    | ReplacementOptionTimeout of String * RegexOptions * TimeSpan
+    | ReplacementOptionTimeout of string * RegexOptions * TimeSpan
     | EvaluatorOptionTimeout of MatchEvaluator * RegexOptions * TimeSpan
 
 type splitMember =
