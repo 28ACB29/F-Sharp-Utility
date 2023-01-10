@@ -12,7 +12,7 @@ module ArrayActivePatterns =
             | true -> Some()
             | false -> None
 
-    let private bindException (fnctn:'a -> 'b) (value:'a):'b option =
+    let private bindException (fnctn:'a array -> 'b) (value:'a array):'b option =
         match value with
         | null -> None
         | _ ->

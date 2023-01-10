@@ -12,7 +12,7 @@ module ListActivePatterns =
             | true -> Some()
             | false -> None
 
-    let private bindException (fnctn:'a -> 'b) (value:'a):'b option =
+    let private bindException (fnctn:'a list -> 'b) (value:'a list):'b option =
         match value with
         | [] -> None
         | _ ->

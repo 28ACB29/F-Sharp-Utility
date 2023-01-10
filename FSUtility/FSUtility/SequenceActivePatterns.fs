@@ -12,7 +12,7 @@ module SequenceActivePatterns =
             | true -> Some()
             | false -> None
 
-    let private bindException (fnctn:'a -> 'b) (value:'a):'b option =
+    let private bindException (fnctn:'a seq -> 'b) (value:'a seq):'b option =
         match value with
         | null -> None
         | _ ->
