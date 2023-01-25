@@ -99,11 +99,11 @@ module XMLNode =
         node.RemoveAll()
         node
     
-    let removeChild (oldChild:'a when 'a :> XmlNode) (node:'a when 'a :> XmlNode):XmlNode =
+    let removeChild (oldChild:'a when 'a :> XmlNode) (node:'a when 'a :> XmlNode):'a when 'a :> XmlNode =
         node.RemoveChild(oldChild) |> ignore
         node
     
-    let replaceChild (oldChild:'a when 'a :> XmlNode) (newChild:'a when 'a :> XmlNode) (node:'a when 'a :> XmlNode):XmlNode =
+    let replaceChild (oldChild:'a when 'a :> XmlNode) (newChild:'a when 'a :> XmlNode) (node:'a when 'a :> XmlNode):'a when 'a :> XmlNode =
         node.ReplaceChild(newChild, oldChild) |> ignore
         node
     
