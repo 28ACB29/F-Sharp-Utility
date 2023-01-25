@@ -1,9 +1,24 @@
 ﻿namespace FSUtility
 
 open System
+open System.IO
 open System.Threading.Tasks
 open System.Xml
 open System.Xml.Schema
+
+type CreateArguments =
+    | InputStream of Stream
+    | InputStreamSettings of Stream * XmlReaderSettings
+    | InputStreamSettingsBaseUri of Stream * XmlReaderSettings * string
+    | InputStreamSettingsInputContext of Stream * XmlReaderSettings * XmlParserContext
+    | OutputFileName of string
+    | InputUriSettings of string * XmlReaderSettings
+    | InputUriSettingsInputContext of string * XmlReaderSettings * XmlParserContext
+    | InputTextReader of TextReader
+    | InputTextReaderSettings of TextReader * XmlReaderSettings
+    | InputTextReaderSettingsBaseUri of TextReader * XmlReaderSettings * string
+    | InputTextReaderSettingsInputContext of TextReader * XmlReaderSettings * XmlParserContext
+    | ReaderSettings of XmlReader * XmlReaderSettings
 
 module XMLReader =
 
@@ -81,6 +96,21 @@ module XMLReader =
     let xmlLang (reader:'a when 'a :> XmlReader):string = reader.XmlLang
  
     let xmlSpace (reader:'a when 'a :> XmlReader):XmlSpace = reader.XmlSpace
+    
+    let create (createArguments:CreateArguments):XmlReader =
+        match createArguments with
+        | InputStream(stream:Stream) -> XmlReader.Create(stream)
+        | InputStreamSettings(stream:Stream, xmlReaderSettings:XmlReaderSettings) -> XmlReader.Create(stream, xmlReaderSettings)
+        | InputStreamSettingsBaseUri(stream:Stream, xmlReaderSettings:XmlReaderSettings, string:string) -> XmlReader.Create(stream, xmlReaderSettings, string)
+        | InputStreamSettingsInputContext(stream:Stream, xmlReaderSettings:XmlReaderSettings, xmlParserContext:XmlParserContext) -> XmlReader.Create(stream, xmlReaderSettings, xmlParserContext)
+        | OutputFileName(string:string) -> XmlReader.Create(string)
+        | InputUriSettings(string:string, xmlReaderSettings:XmlReaderSettings) -> XmlReader.Create(string, xmlReaderSettings)
+        | InputUriSettingsInputContext(string:string, xmlReaderSettings:XmlReaderSettings, xmlParserContext:XmlParserContext) -> XmlReader.Create(string, xmlReaderSettings, xmlParserContext)
+        | InputTextReader(textReader:TextReader) -> XmlReader.Create(textReader)
+        | InputTextReaderSettings(textReader:TextReader, xmlReaderSettings:XmlReaderSettings) -> XmlReader.Create(textReader, xmlReaderSettings)
+        | InputTextReaderSettingsBaseUri(textReader:TextReader, xmlReaderSettings:XmlReaderSettings, string:string) -> XmlReader.Create(textReader, xmlReaderSettings, string)
+        | InputTextReaderSettingsInputContext(textReader:TextReader, xmlReaderSettings:XmlReaderSettings, xmlParserContext:XmlParserContext) -> XmlReader.Create(textReader, xmlReaderSettings, xmlParserContext)
+        | ReaderSettings(xmlReader:XmlReader, xmlReaderSettings:XmlReaderSettings) -> XmlReader.Create(xmlReader, xmlReaderSettings)
 
     let close (reader:'a when 'a :> XmlReader):unit = reader.Close()
  
@@ -95,5 +125,93 @@ module XMLReader =
     let moveToFirstAttribute (reader:'a when 'a :> XmlReader):bool = reader.MoveToFirstAttribute()
  
     let moveToNextAttribute (reader:'a when 'a :> XmlReader):bool = reader.MoveToNextAttribute()
- 
+    
+    let read (reader:'a when 'a :> XmlReader):bool = reader.Read()
+    
+    let readAsync (reader:'a when 'a :> XmlReader):Task<bool> = reader.ReadAsync()
+    
+    let readAttributeValue (reader:'a when 'a :> XmlReader):bool = reader.ReadAttributeValue()
+    
+    let readContentAs (returnType:Type) (namespaceResolver:IXmlNamespaceResolver) (reader:'a when 'a :> XmlReader):obj = reader.ReadContentAs(returnType, namespaceResolver)
+    
+    let readContentAsAsync (returnType:Type) (namespaceResolver:IXmlNamespaceResolver) (reader:'a when 'a :> XmlReader):Task<obj> = reader.ReadContentAsAsync(returnType, namespaceResolver)
+    
+    let readContentAsBase64 (count:int) (index:int) (buffer:byte array) (reader:'a when 'a :> XmlReader):int = reader.ReadContentAsBase64(buffer, index, count)
+    
+    let readContentAsBase64Async (count:int) (index:int) (buffer:byte array) (reader:'a when 'a :> XmlReader):Task<int> = reader.ReadContentAsBase64Async(buffer, index, count)
+    
+    let readContentAsBoolean (reader:'a when 'a :> XmlReader):bool = reader.ReadContentAsBoolean()
+    
+    let readContentAsDateTime (reader:'a when 'a :> XmlReader):DateTime = reader.ReadContentAsDateTime()
+    
+    let readContentAsDateTimeOffset (reader:'a when 'a :> XmlReader):DateTimeOffset = reader.ReadContentAsDateTimeOffset()
+    
+    let readContentAsDecimal (reader:'a when 'a :> XmlReader):decimal = reader.ReadContentAsDecimal()
+    
+    let readContentAsDouble (reader:'a when 'a :> XmlReader):double = reader.ReadContentAsDouble()
+    
+    let readContentAsFloat (reader:'a when 'a :> XmlReader):single = reader.ReadContentAsFloat()
+    
+    let readContentAsInt (reader:'a when 'a :> XmlReader):int = reader.ReadContentAsInt()
+    
+    let readContentAsLong (reader:'a when 'a :> XmlReader):int64 = reader.ReadContentAsLong()
+    
+    let readContentAsObject (reader:'a when 'a :> XmlReader):obj = reader.ReadContentAsObject()
+    
+    let readContentAsObjectAsync (reader:'a when 'a :> XmlReader):Task<obj> = reader.ReadContentAsObjectAsync()
+    
+    let readContentAsString (reader:'a when 'a :> XmlReader):string = reader.ReadContentAsString()
+    
+    let readContentAsStringAsync (reader:'a when 'a :> XmlReader):Task<string> = reader.ReadContentAsStringAsync()
+    
+    let readElementContentAsAsync (returnType:Type) (namespaceResolver:IXmlNamespaceResolver) (reader:'a when 'a :> XmlReader):Task<obj> = reader.ReadElementContentAsAsync(returnType, namespaceResolver)
+    
+    let readElementContentAsBase64 (count:int) (index:int) (buffer:byte array) (reader:'a when 'a :> XmlReader):int = reader.ReadElementContentAsBase64(buffer, index, count)
+    
+    let readElementContentAsBase64Async (count:int) (index:int) (buffer:byte array) (reader:'a when 'a :> XmlReader):Task<int> = reader.ReadElementContentAsBase64Async(buffer, index, count)
+    
+    let readElementContentAsBoolean (reader:'a when 'a :> XmlReader):bool = reader.ReadElementContentAsBoolean()
+    
+    let readElementContentAsDateTime (reader:'a when 'a :> XmlReader):DateTime = reader.ReadElementContentAsDateTime()
+    
+    let readElementContentAsDecimal (reader:'a when 'a :> XmlReader):decimal = reader.ReadElementContentAsDecimal()
+    
+    let readElementContentAsDouble (reader:'a when 'a :> XmlReader):double = reader.ReadElementContentAsDouble()
+    
+    let readElementContentAsFloat (reader:'a when 'a :> XmlReader):single = reader.ReadElementContentAsFloat()
+    
+    let readElementContentAsInt (reader:'a when 'a :> XmlReader):int = reader.ReadElementContentAsInt()
+    
+    let readElementContentAsLong (reader:'a when 'a :> XmlReader):int64 = reader.ReadElementContentAsLong()
+    
+    let readElementContentAsObject (reader:'a when 'a :> XmlReader):obj = reader.ReadElementContentAsObject()
+    
+    let readElementContentAsObjectAsync (reader:'a when 'a :> XmlReader):Task<obj> = reader.ReadElementContentAsObjectAsync()
+    
+    let readElementContentAsString (reader:'a when 'a :> XmlReader):string = reader.ReadElementContentAsString()
+    
+    let readElementContentAsStringAsync (reader:'a when 'a :> XmlReader):Task<string> = reader.ReadElementContentAsStringAsync()
+
+    let readEndElement (reader:'a when 'a :> XmlReader):unit = reader.ReadEndElement()
+    
+    let readInnerXml (reader:'a when 'a :> XmlReader):string = reader.ReadInnerXml()
+    
+    let readInnerXmlAsync (reader:'a when 'a :> XmlReader):Task<string> = reader.ReadInnerXmlAsync()
+    
+    let readOuterXml (reader:'a when 'a :> XmlReader):string = reader.ReadOuterXml()
+    
+    let readOuterXmlAsync (reader:'a when 'a :> XmlReader):Task<string> = reader.ReadOuterXmlAsync()
+    
+    let readString (reader:'a when 'a :> XmlReader):string = reader.ReadString()
+    
+    let readSubtree (reader:'a when 'a :> XmlReader):XmlReader = reader.ReadSubtree()
+    
+    let readValueChunk (count:int) (index:int) (buffer:char array) (reader:'a when 'a :> XmlReader):int = reader.ReadValueChunk(buffer, index, count)
+    
+    let readValueChunkAsync (count:int) (index:int) (buffer:char array) (reader:'a when 'a :> XmlReader):Task<int> = reader.ReadValueChunkAsync(buffer, index, count)
+    
     let resolveEntity (reader:'a when 'a :> XmlReader):unit = reader.ResolveEntity()
+    
+    let skip (reader:'a when 'a :> XmlReader):unit = reader.Skip()
+    
+    let skipAsync (reader:'a when 'a :> XmlReader):Task = reader.SkipAsync()
