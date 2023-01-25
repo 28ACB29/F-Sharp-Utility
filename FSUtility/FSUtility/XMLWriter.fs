@@ -8,9 +8,9 @@ open System.Xml
 open System.Xml.Schema
 
 type CreateArguments =
-    | OutputInputStream of Stream
+    | OutputStream of Stream
     | OutputStreamSettings of Stream * XmlWriterSettings
-    | OutputFileName of string
+    | InputUri of string
     | OutputFileNameSettings of string * XmlWriterSettings
     | OutputStringBuilder of StringBuilder
     | OutputStringBuilderSettings of StringBuilder * XmlWriterSettings
@@ -36,16 +36,16 @@ module XMLWriter =
     
     let create (createArguments:CreateArguments):XmlWriter =
         match createArguments with
-        | OutputInputStream(stream:Stream) -> XmlWriter.Create(stream)
-        | OutputStreamSettings(stream:Stream, xmlWriterSettings:XmlWriterSettings) -> XmlWriter.Create(stream, xmlWriterSettings)
-        | OutputFileName(string:string) -> XmlWriter.Create(string)
-        | OutputFileNameSettings(string:string, xmlWriterSettings:XmlWriterSettings) -> XmlWriter.Create(string, xmlWriterSettings)
-        | OutputStringBuilder(stringBuilder:StringBuilder) -> XmlWriter.Create(stringBuilder)
-        | OutputStringBuilderSettings(stringBuilder:StringBuilder, xmlWriterSettings:XmlWriterSettings) -> XmlWriter.Create(stringBuilder, xmlWriterSettings)
-        | OutputTextWriter(textWriter:TextWriter) -> XmlWriter.Create(textWriter)
-        | OutputTextWriterSettings(textWriter:TextWriter, xmlWriterSettings:XmlWriterSettings) -> XmlWriter.Create(textWriter, xmlWriterSettings)
-        | OutputXmlWriter(xmlWriter:XmlWriter) -> XmlWriter.Create(xmlWriter)
-        | OutputXmlWriterSettings(xmlWriter:XmlWriter, xmlWriterSettings:XmlWriterSettings) -> XmlWriter.Create(xmlWriter, xmlWriterSettings)
+        | OutputStream(output:Stream) -> XmlWriter.Create(output)
+        | OutputStreamSettings(output:Stream, settings:XmlWriterSettings) -> XmlWriter.Create(output, settings)
+        | InputUri(outputFileName:string) -> XmlWriter.Create(outputFileName)
+        | OutputFileNameSettings(outputFileName:string, settings:XmlWriterSettings) -> XmlWriter.Create(outputFileName, settings)
+        | OutputStringBuilder(output:StringBuilder) -> XmlWriter.Create(output)
+        | OutputStringBuilderSettings(output:StringBuilder, settings:XmlWriterSettings) -> XmlWriter.Create(output, settings)
+        | OutputTextWriter(output:TextWriter) -> XmlWriter.Create(output)
+        | OutputTextWriterSettings(output:TextWriter, settings:XmlWriterSettings) -> XmlWriter.Create(output, settings)
+        | OutputXmlWriter(output:XmlWriter) -> XmlWriter.Create(output)
+        | OutputXmlWriterSettings(output:XmlWriter, xmlWriterSettings:XmlWriterSettings) -> XmlWriter.Create(output, xmlWriterSettings)
 
     let close (writer:'a when 'a :> XmlWriter):unit = writer.Close()
     

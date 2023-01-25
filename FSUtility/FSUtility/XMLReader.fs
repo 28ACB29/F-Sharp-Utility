@@ -11,7 +11,7 @@ type CreateArguments =
     | InputStreamSettings of Stream * XmlReaderSettings
     | InputStreamSettingsBaseUri of Stream * XmlReaderSettings * string
     | InputStreamSettingsInputContext of Stream * XmlReaderSettings * XmlParserContext
-    | OutputFileName of string
+    | InputUri of string
     | InputUriSettings of string * XmlReaderSettings
     | InputUriSettingsInputContext of string * XmlReaderSettings * XmlParserContext
     | InputTextReader of TextReader
@@ -99,18 +99,18 @@ module XMLReader =
     
     let create (createArguments:CreateArguments):XmlReader =
         match createArguments with
-        | InputStream(stream:Stream) -> XmlReader.Create(stream)
-        | InputStreamSettings(stream:Stream, xmlReaderSettings:XmlReaderSettings) -> XmlReader.Create(stream, xmlReaderSettings)
-        | InputStreamSettingsBaseUri(stream:Stream, xmlReaderSettings:XmlReaderSettings, string:string) -> XmlReader.Create(stream, xmlReaderSettings, string)
-        | InputStreamSettingsInputContext(stream:Stream, xmlReaderSettings:XmlReaderSettings, xmlParserContext:XmlParserContext) -> XmlReader.Create(stream, xmlReaderSettings, xmlParserContext)
-        | OutputFileName(string:string) -> XmlReader.Create(string)
-        | InputUriSettings(string:string, xmlReaderSettings:XmlReaderSettings) -> XmlReader.Create(string, xmlReaderSettings)
-        | InputUriSettingsInputContext(string:string, xmlReaderSettings:XmlReaderSettings, xmlParserContext:XmlParserContext) -> XmlReader.Create(string, xmlReaderSettings, xmlParserContext)
-        | InputTextReader(textReader:TextReader) -> XmlReader.Create(textReader)
-        | InputTextReaderSettings(textReader:TextReader, xmlReaderSettings:XmlReaderSettings) -> XmlReader.Create(textReader, xmlReaderSettings)
-        | InputTextReaderSettingsBaseUri(textReader:TextReader, xmlReaderSettings:XmlReaderSettings, string:string) -> XmlReader.Create(textReader, xmlReaderSettings, string)
-        | InputTextReaderSettingsInputContext(textReader:TextReader, xmlReaderSettings:XmlReaderSettings, xmlParserContext:XmlParserContext) -> XmlReader.Create(textReader, xmlReaderSettings, xmlParserContext)
-        | ReaderSettings(xmlReader:XmlReader, xmlReaderSettings:XmlReaderSettings) -> XmlReader.Create(xmlReader, xmlReaderSettings)
+        | InputStream(input:Stream) -> XmlReader.Create(input)
+        | InputStreamSettings(input:Stream, settings:XmlReaderSettings) -> XmlReader.Create(input, settings)
+        | InputStreamSettingsBaseUri(input:Stream, settings:XmlReaderSettings, baseUri:string) -> XmlReader.Create(input, settings, baseUri)
+        | InputStreamSettingsInputContext(input:Stream, settings:XmlReaderSettings, inputContext:XmlParserContext) -> XmlReader.Create(input, settings, inputContext)
+        | InputUri(inputUri:string) -> XmlReader.Create(inputUri)
+        | InputUriSettings(inputUri:string, settings:XmlReaderSettings) -> XmlReader.Create(inputUri, settings)
+        | InputUriSettingsInputContext(inputUri:string, settings:XmlReaderSettings, inputContext:XmlParserContext) -> XmlReader.Create(inputUri, settings, inputContext)
+        | InputTextReader(input:TextReader) -> XmlReader.Create(input)
+        | InputTextReaderSettings(input:TextReader, settings:XmlReaderSettings) -> XmlReader.Create(input, settings)
+        | InputTextReaderSettingsBaseUri(input:TextReader, settings:XmlReaderSettings, baseUri:string) -> XmlReader.Create(input, settings, baseUri)
+        | InputTextReaderSettingsInputContext(input:TextReader, settings:XmlReaderSettings, inputContext:XmlParserContext) -> XmlReader.Create(input, settings, inputContext)
+        | ReaderSettings(xmlReader:XmlReader, settings:XmlReaderSettings) -> XmlReader.Create(xmlReader, settings)
 
     let close (reader:'a when 'a :> XmlReader):unit = reader.Close()
  
