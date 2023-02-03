@@ -19,6 +19,18 @@ type CreateArguments =
     | OutputXmlWriter of XmlWriter
     | OutputXmlWriterSettings of XmlWriter * XmlWriterSettings
 
+type ValueTypes =
+    | Single of single
+    | Object of obj
+    | Int64 of int64
+    | Int32 of int32
+    | Double of double
+    | String of string
+    | DateTimeOffset of DateTimeOffset
+    | DateTime of DateTime
+    | Boolean of bool
+    | Decimal of decimal
+
 module XMLWriter =
 
     let private boolToOption (value:bool):unit option =
@@ -113,13 +125,13 @@ module XMLWriter =
     
     let writeNmTokenAsync (name:string) (writer:'b when 'b :> XmlWriter):Task = writer.WriteNmTokenAsync(name)
     
-    let writeProcessingInstruction (name:string) (text:string) (writer:'b when 'b :> XmlWriter):unit = writer.WriteProcessingInstruction(name, text)
+    let writeProcessingInstruction (text:string) (name:string) (writer:'b when 'b :> XmlWriter):unit = writer.WriteProcessingInstruction(name, text)
     
-    let writeProcessingInstructionAsync (name:string) (text:string) (writer:'b when 'b :> XmlWriter):Task = writer.WriteProcessingInstructionAsync(name, text)
+    let writeProcessingInstructionAsync (text:string) (name:string) (writer:'b when 'b :> XmlWriter):Task = writer.WriteProcessingInstructionAsync(name, text)
     
-    let writeQualifiedName (localName:string) (ns:string) (writer:'b when 'b :> XmlWriter):unit = writer.WriteQualifiedName(localName, ns)
+    let writeQualifiedName (ns:string) (localName:string) (writer:'b when 'b :> XmlWriter):unit = writer.WriteQualifiedName(localName, ns)
     
-    let writeQualifiedNameAsync (localName:string) (ns:string) (writer:'b when 'b :> XmlWriter):Task = writer.WriteQualifiedNameAsync(localName, ns)
+    let writeQualifiedNameAsync (ns:string) (localName:string) (writer:'b when 'b :> XmlWriter):Task = writer.WriteQualifiedNameAsync(localName, ns)
     
     let writeString (text:string) (writer:'b when 'b :> XmlWriter):unit = writer.WriteString(text)
     
@@ -128,6 +140,19 @@ module XMLWriter =
     let writeSurrogateCharEntity (lowChar:char) (highChar:char) (writer:'b when 'b :> XmlWriter):unit = writer.WriteSurrogateCharEntity(lowChar, highChar)
     
     let writeSurrogateCharEntityAsync (lowChar:char) (highChar:char) (writer:'b when 'b :> XmlWriter):Task = writer.WriteSurrogateCharEntityAsync(lowChar, highChar)
+    
+    let writeValue (valueTypes:ValueTypes) (writer:'b when 'b :> XmlWriter):unit =
+        match valueTypes with
+        | Single(single:single) -> writer.WriteValue(single)
+        | Object(obj:obj) -> writer.WriteValue(obj)
+        | Int64(int64:int64) -> writer.WriteValue(int64)
+        | Int32(int32:int32) -> writer.WriteValue(int32)
+        | Double(double:double) -> writer.WriteValue(double)
+        | String(string:string) -> writer.WriteValue(string)
+        | DateTimeOffset(dateTimeOffset:DateTimeOffset) -> writer.WriteValue(dateTimeOffset)
+        | DateTime(dateTime:DateTime) -> writer.WriteValue(dateTime)
+        | Boolean(bool:bool) -> writer.WriteValue(bool)
+        | Decimal(decimal:decimal) -> writer.WriteValue(decimal)
     
     let writeWhitespace (ws:string) (writer:'b when 'b :> XmlWriter):unit = writer.WriteWhitespace(ws)
     

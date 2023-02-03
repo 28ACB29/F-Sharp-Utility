@@ -20,6 +20,10 @@ type CreateArguments =
     | InputTextReaderSettingsInputContext of TextReader * XmlReaderSettings * XmlParserContext
     | ReaderSettings of XmlReader * XmlReaderSettings
 
+type ReadArguments =
+    | ReadName of string
+    | LocalNameNamespace of string * string
+
 module XMLReader =
 
     let private boolToOption (value:bool):unit option =
@@ -164,6 +168,11 @@ module XMLReader =
     
     let readContentAsStringAsync (reader:'a when 'a :> XmlReader):Task<string> = reader.ReadContentAsStringAsync()
     
+    let readElementContentAs (localNameNamespaceOption:(string * string) option) (returnType:Type) (namespaceResolver:IXmlNamespaceResolver) (reader:'a when 'a :> XmlReader):obj =
+        match localNameNamespaceOption with
+        | None -> reader.ReadElementContentAs(returnType, namespaceResolver)
+        | Some(localName:string, namespaceURI:string) -> reader.ReadElementContentAs(returnType, namespaceResolver, localName, namespaceURI)
+    
     let readElementContentAsAsync (returnType:Type) (namespaceResolver:IXmlNamespaceResolver) (reader:'a when 'a :> XmlReader):Task<obj> = reader.ReadElementContentAsAsync(returnType, namespaceResolver)
     
     let readElementContentAsBase64 (count:int) (index:int) (buffer:byte array) (reader:'a when 'a :> XmlReader):int = reader.ReadElementContentAsBase64(buffer, index, count)
@@ -202,9 +211,32 @@ module XMLReader =
     
     let readOuterXmlAsync (reader:'a when 'a :> XmlReader):Task<string> = reader.ReadOuterXmlAsync()
     
+    let readStartElement (readArgumentsOption:ReadArguments option) (reader:'a when 'a :> XmlReader):unit =
+        match readArgumentsOption with
+        | None -> reader.ReadStartElement()
+        | Some(readArguments:ReadArguments) ->
+            match readArguments with
+            | ReadName(name:string) -> reader.ReadStartElement(name)
+            | LocalNameNamespace(localName:string, ns:string) -> reader.ReadStartElement(localName, ns)
+    
     let readString (reader:'a when 'a :> XmlReader):string = reader.ReadString()
     
     let readSubtree (reader:'a when 'a :> XmlReader):XmlReader = reader.ReadSubtree()
+    
+    let readToDescendant (readArguments:ReadArguments) (reader:'a when 'a :> XmlReader):bool =
+        match readArguments with
+        | ReadName(name:string) -> reader.ReadToDescendant(name)
+        | LocalNameNamespace(localName:string, namespaceURI:string) -> reader.ReadToDescendant(localName, namespaceURI)
+    
+    let readToFollowing (readArguments:ReadArguments) (reader:'a when 'a :> XmlReader):bool =
+        match readArguments with
+        | ReadName(name:string) -> reader.ReadToFollowing(name)
+        | LocalNameNamespace(localName:string, namespaceURI:string) -> reader.ReadToFollowing(localName, namespaceURI)
+    
+    let readToNextSibling (readArguments:ReadArguments) (reader:'a when 'a :> XmlReader):bool =
+        match readArguments with
+        | ReadName(name:string) -> reader.ReadToNextSibling(name)
+        | LocalNameNamespace(localName:string, namespaceURI:string) -> reader.ReadToNextSibling(localName, namespaceURI)
     
     let readValueChunk (count:int) (index:int) (buffer:char array) (reader:'a when 'a :> XmlReader):int = reader.ReadValueChunk(buffer, index, count)
     
