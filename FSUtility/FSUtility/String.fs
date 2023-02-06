@@ -4,7 +4,19 @@ open System
 open System.Globalization
 open System.Text
 
-module String =
+type CompareArguments =
+    | StrAStrB of string * string
+    | StrAStrBIgnoreCase of string * string * bool
+    | StrAStrBIgnoreCaseCulture of string * string * bool * CultureInfo
+    | StrAStrBCultureOptions of string * string * CultureInfo * CompareOptions
+    | StrAStrBComparisonType of string * string * StringComparison
+    | StrAIndexAStrBIndexBLength of string * Int32 * string * Int32 * Int32
+    | StrAIndexAStrBIndexBLengthIgnoreCase of string * Int32 * string * Int32 * Int32 * bool
+    | StrAIndexAStrBIndexBLengthIgnoreCaseCulture of string * Int32 * string * Int32 * Int32 * bool * CultureInfo
+    | StrAIndexAStrBIndexBLengthCultureOptions of string * Int32 * string * Int32 * Int32 * CultureInfo * CompareOptions
+    | StrAIndexAStrBIndexBLengthComparisonType of string * Int32 * string * Int32 * Int32 * StringComparison
+
+module string =
 
     let (|Interned|_|) (str:string) =
         match str with
@@ -44,14 +56,27 @@ module String =
         s.StartsWith(value)
         |> boolToOption
 
-    let slice (startIndex:int) (endIndex:int) (s:string):string = s.Substring(startIndex, endIndex - startIndex)
-
-    let chars (index:int) (s:string):char = s.Chars index
+    let compare (compareArguments:CompareArguments):int =
+        match compareArguments with
+        | StrAStrB(strA:string, strB:string) -> String.Compare(strA, strB)
+        | StrAStrBIgnoreCase(strA:string, strB:string, ignoreCase:bool) -> String.Compare(strA, strB, ignoreCase)
+        | StrAStrBIgnoreCaseCulture(strA:string, strB:string, ignoreCase:bool, culture:CultureInfo) -> String.Compare(strA, strB, ignoreCase, culture)
+        | StrAStrBCultureOptions(strA:string, strB:string, culture:CultureInfo, options:CompareOptions) -> String.Compare(strA, strB, culture, options)
+        | StrAStrBComparisonType(strA:string, strB:string, comparisonType:StringComparison) -> String.Compare(strA, strB, comparisonType)
+        | StrAIndexAStrBIndexBLength(strA:string, indexA:int, strB:string, indexB:int, length:int) -> String.Compare(strA, indexA, strB, indexB, length)
+        | StrAIndexAStrBIndexBLengthIgnoreCase(strA:string, indexA:int, strB:string, indexB:int, length:int, ignoreCase:bool) -> String.Compare(strA, indexA, strB, indexB, length, ignoreCase)
+        | StrAIndexAStrBIndexBLengthIgnoreCaseCulture(strA:string, indexA:int, strB:string, indexB:int, length:int, ignoreCase:bool, culture:CultureInfo) -> String.Compare(strA, indexA, strB, indexB, length, ignoreCase, culture)
+        | StrAIndexAStrBIndexBLengthCultureOptions(strA:string, indexA:int, strB:string, indexB:int, length:int, culture:CultureInfo, options:CompareOptions) -> String.Compare(strA, indexA, strB, indexB, length, culture, options)
+        | StrAIndexAStrBIndexBLengthComparisonType(strA:string, indexA:int, strB:string, indexB:int, length:int, comparisonType:StringComparison) -> String.Compare(strA, indexA, strB, indexB, length, comparisonType)
 
     let compareOrdinal (options:(int * int * int) option) (strA:string) (strB:string):int =
         match options with
         | None ->  String.CompareOrdinal(strA, strB)
         | Some((indexA:int), (indexB:int), (length:int)) ->  String.CompareOrdinal(strA, indexA, strB, indexB, length)
+
+    let slice (startIndex:int) (endIndex:int) (s:string):string = s.Substring(startIndex, endIndex - startIndex)
+
+    let chars (index:int) (s:string):char = s.Chars index
 
     let indexOf (value:char) (s:string):int = s.IndexOf(value)
 
