@@ -65,6 +65,7 @@
     <Compile Include="SequenceActivePatterns.fs" />
     <Compile Include="SequenceIndexed.fs" />
     <Compile Include="Statistics.fs" />
+    <Compile Include="Stream.fs" />
     <Compile Include="String.fs" />
     <Compile Include="StringConvert.fs" />
     <Compile Include="Tuple.fs" />
