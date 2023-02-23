@@ -20,16 +20,16 @@ type CreateArguments =
     | OutputXmlWriterSettings of XmlWriter * XmlWriterSettings
 
 type ValueTypes =
-    | Single of single
-    | Object of obj
-    | Int64 of int64
-    | Int32 of int32
-    | Double of double
-    | String of string
+    | Boolean of bool
     | DateTimeOffset of DateTimeOffset
     | DateTime of DateTime
-    | Boolean of bool
     | Decimal of decimal
+    | Double of double
+    | Int32 of int32
+    | Int64 of int64
+    | Object of obj
+    | Single of single
+    | String of string
 
 module XMLWriter =
 
@@ -143,16 +143,16 @@ module XMLWriter =
     
     let writeValue (valueTypes:ValueTypes) (writer:'b when 'b :> XmlWriter):unit =
         match valueTypes with
-        | Single(single:single) -> writer.WriteValue(single)
-        | Object(obj:obj) -> writer.WriteValue(obj)
-        | Int64(int64:int64) -> writer.WriteValue(int64)
-        | Int32(int32:int32) -> writer.WriteValue(int32)
-        | Double(double:double) -> writer.WriteValue(double)
-        | String(string:string) -> writer.WriteValue(string)
-        | DateTimeOffset(dateTimeOffset:DateTimeOffset) -> writer.WriteValue(dateTimeOffset)
-        | DateTime(dateTime:DateTime) -> writer.WriteValue(dateTime)
-        | Boolean(bool:bool) -> writer.WriteValue(bool)
-        | Decimal(decimal:decimal) -> writer.WriteValue(decimal)
+        | Boolean(value:bool) -> writer.WriteValue(value)
+        | DateTimeOffset(value:DateTimeOffset) -> writer.WriteValue(value)
+        | DateTime(value:DateTime) -> writer.WriteValue(value)
+        | Decimal(value:decimal) -> writer.WriteValue(value)
+        | Double(value:double) -> writer.WriteValue(value)
+        | Int32(value:int32) -> writer.WriteValue(value)
+        | Int64(value:int64) -> writer.WriteValue(value)
+        | Object(value:obj) -> writer.WriteValue(value)
+        | Single(value:single) -> writer.WriteValue(value)
+        | String(value:string) -> writer.WriteValue(value)
     
     let writeWhitespace (ws:string) (writer:'b when 'b :> XmlWriter):unit = writer.WriteWhitespace(ws)
     
