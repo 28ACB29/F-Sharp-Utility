@@ -52,6 +52,8 @@
     <Compile Include="BinaryReader.fs" />
     <Compile Include="BinaryWriter.fs" />
     <Compile Include="Character.fs" />
+    <Compile Include="CollectionActivePatterns.fs" />
+    <Compile Include="Collections.fs" />
     <Compile Include="Comparison.fs" />
     <Compile Include="Converter.fs" />
     <Compile Include="Deque.fs" />
@@ -63,6 +65,7 @@
     <Compile Include="OptionValueType.fs" />
     <Compile Include="NumberType.fs" />
     <Compile Include="ProtectedInteger.fs" />
+    <Compile Include="Recurrence.fs" />
     <Compile Include="RegularExpression.fs" />
     <Compile Include="SequenceActivePatterns.fs" />
     <Compile Include="SequenceIndexed.fs" />
@@ -70,6 +73,7 @@
     <Compile Include="Stream.fs" />
     <Compile Include="String.fs" />
     <Compile Include="StringConvert.fs" />
+    <Compile Include="SequenceMetric.fs" />
     <Compile Include="TextReader.fs" />
     <Compile Include="TextWriter.fs" />
     <Compile Include="Tuple.fs" />
