@@ -69,8 +69,8 @@ module Statistics =
 
     let cumulativeDistribution (mu:double) (sigma:double) (x:double):double =
         let integrate (a:double) (b:double) =
-            let stepSize = 0.001
-            let steps =
+            let stepSize:float = 0.001
+            let steps:int =
                 (b - a) / stepSize
                 |> Math.Ceiling
                 |> int
@@ -84,17 +84,17 @@ module Statistics =
         | 1 -> integrate 0.0 z
 
     let covariance (X:double array) (Y:double array):double =
-        let n =
+        let n:double =
             X
             |> Array.length
             |> double
-        let residualsX = residuals X
-        let residualsY = residuals Y
+        let residualsX:double array = residuals X
+        let residualsY:double array = residuals Y
         (Array.fold2(fun accumulator element1 element2 -> accumulator + element1 * element2) 0.0 residualsX residualsY) / n
 
     let rho (X:double array) (Y:double array):double =
-        let sigmaX = sigma X
-        let sigmaY = sigma Y
+        let sigmaX:double = sigma X
+        let sigmaY:double = sigma Y
         covariance X Y / (sigmaX * sigmaY)
 
     let converToRanks(data:'a array when 'a : comparison):int array =
@@ -102,15 +102,15 @@ module Statistics =
         data |> Array.map(fun element1 -> Array.findIndex(fun element2 -> element1 = element2) sorted)
 
     let r (X:'a array) (Y:'a array):double =
-        let n = X |> Array.length |> double
-        let rankX = converToRanks(X)
-        let rankY = converToRanks(Y)
-        let d = Array.fold2(fun accumulator element1 element2 -> accumulator + pown (element1 - element2) 2) 0 rankX rankY |> double
+        let n:double = X |> Array.length |> double
+        let rankX:int array = converToRanks(X)
+        let rankY:int array = converToRanks(Y)
+        let d:double = Array.fold2(fun accumulator element1 element2 -> accumulator + pown (element1 - element2) 2) 0 rankX rankY |> double
         1.0 - (6.0 * d / (n * (pown n 2 - 1.0)))
 
     let linearRegression (X:double array) (Y:double array):(double * double) =
-        let b = (covariance X Y) / (covariance X X)
-        let a = (Array.average Y) - b * (Array.average X)
+        let b:double = (covariance X Y) / (covariance X X)
+        let a:double = (Array.average Y) - b * (Array.average X)
         (a, b)
 
 
